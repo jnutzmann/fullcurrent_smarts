@@ -1,0 +1,3 @@
+[submodule "d1k"]
+	path = d1k
+	url = git@github.com:jnutzmann/d1k.git
