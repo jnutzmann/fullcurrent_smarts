@@ -20,6 +20,7 @@ INCLUDE+=-I$(CURDIR)/d1k/CMSIS/Include
 INCLUDE+=-I$(CURDIR)/d1k/STM32F4xx_StdPeriph_Driver/inc
 INCLUDE+=-I$(CURDIR)/config
 INCLUDE+=-I$(CURDIR)/d1k/src
+INCLUDE+=-I$(CURDIR)/src
 
 BUILD_DIR = $(CURDIR)/build
 BIN_DIR = $(CURDIR)/bin
@@ -29,7 +30,7 @@ BIN_DIR = $(CURDIR)/bin
 vpath %.c $(CURDIR)/d1k/STM32F4xx_StdPeriph_Driver/src \
 	  $(CURDIR)/d1k/syscall $(CURDIR)/hardware $(FREERTOS) \
 	  $(FREERTOS)/portable/MemMang $(FREERTOS)/portable/GCC/ARM_CM4F \
-	  $(CURDIR)/d1k/src
+	  $(CURDIR)/d1k/src $(CURDIR)/src
 
 vpath %.s $(STARTUP)
 ASRC=startup_stm32f4xx.s
