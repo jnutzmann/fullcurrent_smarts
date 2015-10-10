@@ -1,4 +1,4 @@
-# fullCURRENT
+# fullCURRENT Smarts
 
 This is a project with code for the fullCURRENT motor controller.  It was based off a demo project of FreeRTOS running on a STM32F4 Discovery board located here: [website](https://github.com/wangyeee/STM32F4-FreeRTOS)
 
@@ -31,4 +31,3 @@ $ arm-none-eabi-gdb binary/FreeRTOS.elf
 ```
 
 You'll get breakpoint triggered at `main` function, and enjoy!
-# fullcurrent_smarts
