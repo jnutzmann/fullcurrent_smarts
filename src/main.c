@@ -1,6 +1,7 @@
 #include "stm32f4xx.h"
 #include "misc.h"
-
+#include "FreeRTOS.h"
+#include "task.h"
 #include "led.h"
 
 #include "diagnostics.h"
@@ -14,7 +15,7 @@ int main(void) {
 
     init_leds();
 
-    for (;;);
+    vTaskStartScheduler();
 }
 
 static void init_leds (void)

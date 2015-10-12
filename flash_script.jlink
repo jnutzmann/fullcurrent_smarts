@@ -1,0 +1,5 @@
+si 1
+speed 4000
+r
+h
+loadbin bin/smarts.bin,0x08000000
