@@ -42,11 +42,15 @@ static void init_leds (void)
     led_init_struct.GPIO_Pin = GPIO_Pin_4;
     led_init(V_ERROR_LED,&led_init_struct);
 
+    led_init_struct.off_time = 500;
+    led_init_struct.on_time = 500;
+
     led_init_struct.GPIO_Pin = GPIO_Pin_3;
     led_init(I_ERROR_LED,&led_init_struct);
 
-    led_init_struct.off_time = 500;
-    led_init_struct.on_time = 500;
+//  led_init_struct.off_time = 500;
+//  led_init_struct.on_time = 500;
+
     led_init_struct.GIOPx = GPIOB;
     led_init_struct.GPIO_Clock = RCC_AHB1Periph_GPIOB;
     led_init_struct.GPIO_Pin = GPIO_Pin_5;
