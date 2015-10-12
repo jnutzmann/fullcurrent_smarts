@@ -20,3 +20,5 @@
 *.elf
 
 .DS_Store
+.idea*
+*CMakeLists.txt*

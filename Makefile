@@ -23,7 +23,7 @@ CDEFS=-DUSE_STDPERIPH_DRIVER -DSTM32F4XX -DHSE_VALUE=8000000 -D__FPU_PRESENT=1 -
 
 MCUFLAGS=-mcpu=cortex-m4 -mthumb -mfloat-abi=hard
 COMMONFLAGS=-O$(OPTLVL) $(DBG) -Wall
-CFLAGS=$(COMMONFLAGS) $(MCUFLAGS) $(INCLUDE) $(CDEFS)
+CFLAGS=$(COMMONFLAGS) $(MCUFLAGS) $(INCLUDE) $(CDEFS) -std=gnu99
 LDLIBS=$(TOOLCHAIN_ROOT)/arm-none-eabi/lib/armv7e-m/fpu/libc.a $(TOOLCHAIN_ROOT)/arm-none-eabi/lib/armv7e-m/fpu/libm.a
 LDFLAGS=$(COMMONFLAGS) -fno-exceptions -ffunction-sections -fdata-sections -nostartfiles -Wl,--gc-sections,-T$(LINKER_SCRIPT)
 
@@ -47,7 +47,7 @@ INCLUDE= \
 # of the same directory as their source files
 vpath %.c d1k/STM32F4xx_StdPeriph_Driver/src d1k/syscall hardware d1k/FreeRTOS \
 	  d1k/FreeRTOS/portable/MemMang d1k/FreeRTOS/portable/GCC/ARM_CM4F \
-	  d1k/src src
+	  d1k/src d1k/src/drivers src
 
 vpath %.s $(STARTUP)
 ASRC=startup_stm32f4xx.s
@@ -57,15 +57,23 @@ SRC= \
 stm32f4xx_it.c \
 system_stm32f4xx.c \
 main.c \
-syscalls.c \
+syscalls.c
 
 # FreeRTOS Source Files
 SRC+=port.c list.c queue.c tasks.c event_groups.c timers.c heap_4.c
+
+# d1k Source Files
+SRC+= \
+led.c \
+can.c \
+i2c.c \
+nvmem.c
 
 # Standard Peripheral Source Files
 SRC+= \
 misc.c \
 stm32f4xx_adc.c \
+stm32f4xx_can.c \
 stm32f4xx_dac.c \
 stm32f4xx_dma.c \
 stm32f4xx_exti.c \
@@ -109,3 +117,5 @@ clean:
 	
 jtag:
 	openocd -f $(TARGET).cfg
+
+cb: clean all
