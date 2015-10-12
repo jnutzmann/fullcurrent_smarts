@@ -1,8 +1,10 @@
+#include <stm32f4xx_gpio.h>
 #include "stm32f4xx.h"
 #include "misc.h"
 #include "FreeRTOS.h"
 #include "task.h"
 #include "led.h"
+#include "stm32f4xx_gpio.h"
 
 #include "diagnostics.h"
 
@@ -15,7 +17,18 @@ int main(void) {
 
     init_leds();
 
-    vTaskStartScheduler();
+    GPIO_InitTypeDef  GPIO_InitStructure;
+    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_25MHz;
+    GPIO_Init(GPIOD, &GPIO_InitStructure);
+
+    GPIO_SetBits(GPIOD, GPIO_Pin_7);
+
+    while(1) {}
 }
 
 static void init_leds (void)

@@ -115,7 +115,12 @@ clean:
 	@echo [RM] BIN
 	@rm -rf $(BIN_DIR)
 	
+jlink:
+	JLinkExe flash.jlink
+
 jtag:
 	openocd -f $(TARGET).cfg
 
 cb: clean all
+
+cbf: clean all jlink

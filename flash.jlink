@@ -1,0 +1,5 @@
+exec device = stm32f405vg
+r
+halt
+loadbin bin/smarts.bin 0x08000000
+exit
