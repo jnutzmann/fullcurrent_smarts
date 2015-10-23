@@ -124,3 +124,5 @@ jtag:
 cb: clean all
 
 cbf: clean all jlink
+
+bf: all jlink
