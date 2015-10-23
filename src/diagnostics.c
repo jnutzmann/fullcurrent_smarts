@@ -18,31 +18,29 @@ GNU General Public License for more details.
 
 #include "FreeRTOS.h"
 #include "task.h"
-#include "string.h"
-
 
 /****************************************************************************
  * Definitions
  ***************************************************************************/
 
-#define DIAGNOSTICS_TASK_FREQUENCY	(5)
+#define DIAGNOSTICS_TASK_FREQUENCY (5)
 
+#define BITMASK(e,a) (a << e)
 /****************************************************************************
  * Global Variables
  ***************************************************************************/
 
 xTaskHandle diag_task_handle;
 
-static uint32_t errorsPresent = 0;
-static uint32_t warningsPresent = 0;
+static uint32_t errors_present = 0;
+static uint32_t warnings_present = 0;
 
 /****************************************************************************
  * Prototypes
  ***************************************************************************/
 
 void diag_task( void * pvParameters );
-
-static void init_leds();
+static void init_leds ( void );
 
 /****************************************************************************
  * Public Functions
@@ -53,116 +51,112 @@ static void init_leds();
  */
 void diag_init( void )
 {
-    init_leds();
-    
-   // xTaskCreate(diag_task, "DIAGNOS", 1024, NULL, 3, &diag_task_handle);
+    init_leds( );
+    xTaskCreate( diag_task, "DIAGNOS", 1024, NULL, 3, &diag_task_handle );
 }
 
+void error_throw( ErrorEnum_t error )
+{
+    errors_present |= (uint32_t) (0x1 << error);
+}
 
-//bool diag_GetHardwareOvercurrent( void )
-//{
-//    return !GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_1);
-//}
+void error_clear( ErrorEnum_t error )
+{
+    errors_present &= ~((uint32_t) (0x1 << error));
+}
 
-//void diag_ThrowError( ErrorEnum_t error )
-//{
-//    errorsPresent |= (uint32) (0x1 << error);
-//}
-//
-//void diag_ClearError( ErrorEnum_t error )
-//{
-//    errorsPresent &= ~((uint32) (0x1 << error));
-//}
-//
-//bool diag_GetErrorState( ErrorEnum_t error )
-//{
-//    return errorsPresent & (0x1 << error);
-//}
-//
-//uint32 diag_GetErrorBitmask ( void )
-//{
-//    return errorsPresent;
-//}
-//
-//void diag_ThrowWarning( WarningEnum_t warning )
-//{
-//    warningsPresent |= (uint32) (0x1 << warning);
-//}
-//
-//void diag_ClearWarning( WarningEnum_t warning )
-//{
-//    warningsPresent &= ~((uint32) (0x1 << warning));
-//}
-//
-//bool diag_GetWarningState( WarningEnum_t warning )
-//{
-//    return warningsPresent & (0x1 << warning);
-//}
-//
-//uint32 diag_GetWarningBitmask( void )
-//{
-//    return warningsPresent;
-//}
+bool error_get_state( ErrorEnum_t error )
+{
+    return errors_present & (0x1 << error);
+}
+
+uint32_t error_get_bitmask( void )
+{
+    return errors_present;
+}
+
+void warning_throw( WarningEnum_t warning )
+{
+    warnings_present |= (uint32_t) (0x1 << warning);
+}
+
+void diag_warning_clear( WarningEnum_t warning )
+{
+    warnings_present &= ~((uint32_t) (0x1 << warning));
+}
+
+bool diag_GetWarningState( WarningEnum_t warning )
+{
+    return warnings_present & (0x1 << warning);
+}
+
+uint32_t diag_GetWarningBitmask( void )
+{
+    return warnings_present;
+}
 
 /****************************************************************************
  * Private Functions
  ***************************************************************************/
 
-#define BITMASK(e,a) (a << e)
-
-static void diag_Task( void * pvParameters )
+void diag_task( void * pvParameters )
 {
     portTickType xLastWakeTime = xTaskGetTickCount();
 
-    CanTxMsg msg;
-
-    msg.RTR = CAN_RTR_Data;
-    msg.DLC = 8;
-
     while (1)
     {
-        /*
-        if (warningsPresent) {
-            d1k_LED_On(WARNING_LED);
-        } else {
-            d1k_LED_Off(WARNING_LED);
+        
+        if ( warnings_present ) 
+        {
+            led_on( LED_WARNING );
+        } 
+        else 
+        {
+            led_off( LED_WARNING );
         }
 
-        if (errorsPresent & (
-                BITMASK(ERROR_MOTOR_HALLS,1)
-                | BITMASK(ERROR_MOTOR_NOT_PRESENT,1)
-                | BITMASK(ERROR_MOTOR_OVERTEMP,1)
-        )) {
-            d1k_LED_On(MOT_ERROR_LED);
-        } else {
-            d1k_LED_Off(MOT_ERROR_LED);
+
+        if (errors_present & (
+             BITMASK(ERROR_MOTOR_HALLS,1)
+             | BITMASK(ERROR_MOTOR_NOT_PRESENT,1)
+             | BITMASK(ERROR_MOTOR_OVERTEMP,1)))
+        {
+            led_on( LED_MOT_ERROR );
+        }
+        else
+        {
+            led_off( LED_MOT_ERROR );
         }
 
-        if (errorsPresent & (
+        if (errors_present & (
                 BITMASK(ERROR_CURRENT_HARDWARE_FAULT,1)
                 | BITMASK(ERROR_CURRENT_SOFTWARE_FAULT,1)
                 | BITMASK(ERROR_CURRENT_NONE,1)
-                | BITMASK(ERROR_CURRENT_IMBALANCE,1)
-        )) {
-            d1k_LED_On(I_ERROR_LED);
-        } else {
-            d1k_LED_Off(I_ERROR_LED);
+                | BITMASK(ERROR_CURRENT_IMBALANCE,1)))
+        {
+            led_on( LED_I_ERROR );
+        }
+        else
+        {
+            led_off( LED_I_ERROR );
         }
 
-        if (errorsPresent & (
+        if (errors_present & (
                 BITMASK(ERROR_VOLTAGE_HIGH_PHASE_A,1)
                 | BITMASK(ERROR_VOLTAGE_HIGH_PHASE_B,1)
                 | BITMASK(ERROR_VOLTAGE_HIGH_PHASE_C,1)
                 | BITMASK(ERROR_VOLTAGE_HIGH_BUS,1)
                 | BITMASK(ERROR_VOLTAGE_HIGH_15,1)
-                | BITMASK(ERROR_VOLTAGE_LOW_15,1)
-        )) {
-            d1k_LED_On(V_ERROR_LED);
-        } else {
-            d1k_LED_Off(V_ERROR_LED);
+                | BITMASK(ERROR_VOLTAGE_LOW_15,1)))
+        {
+            led_on( LED_V_ERROR );
+        }
+        else
+        {
+            led_off( LED_V_ERROR );
         }
 
-        if (errorsPresent & (
+        if (errors_present & (
                 BITMASK(ERROR_OVERTEMP_A,1)
                 | BITMASK(ERROR_OVERTEMP_AN,1)
                 | BITMASK(ERROR_OVERTEMP_B,1)
@@ -170,24 +164,20 @@ static void diag_Task( void * pvParameters )
                 | BITMASK(ERROR_OVERTEMP_C,1)
                 | BITMASK(ERROR_OVERTEMP_CN,1)
                 | BITMASK(ERROR_OVERTEMP_AMB,1)
-                | BITMASK(ERROR_OVERTEMP_HS,1)
-        )) {
-            d1k_LED_On(GEN_ERROR_LED);
-        } else {
-            d1k_LED_Off(GEN_ERROR_LED);
+                | BITMASK(ERROR_OVERTEMP_HS,1)))
+        {
+            led_on( LED_ERROR );
         }
-
-
-        memcpy(&msg.Data[0],&errorsPresent,sizeof(errorsPresent));
-        memcpy(&msg.Data[4],&warningsPresent,sizeof(warningsPresent));
-
-        //fullCAN_SendPacket(&msg,FULLCAN_IDBASE_EVENTS);
-    */
-        vTaskDelayUntil( &xLastWakeTime, configTICK_RATE_HZ/DIAGNOSTICS_TASK_FREQUENCY);
+        else
+        {
+            led_off( LED_ERROR );
+        }
+    
+        vTaskDelayUntil( &xLastWakeTime, configTICK_RATE_HZ/DIAGNOSTICS_TASK_FREQUENCY );
     }
 }
 
-static void init_leds (void)
+static void init_leds ( void )
 {
     LEDInitStruct_t led_init_struct;
 
