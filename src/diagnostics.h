@@ -1,7 +1,7 @@
 /********************************************************************
 diagnostics.c
 
-Copyright (c) 2014, Jonathan Nutzmann
+Copyright (c) 2015, Jonathan Nutzmann
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -16,12 +16,29 @@ GNU General Public License for more details.
 #ifndef FULLCURRENT_SMARTS_DIAGNOSTICS_H
 #define FULLCURRENT_SMARTS_DIAGNOSTICS_H
 
-#define CAN_LED 		(0)
-#define WARNING_LED		(1)
-#define MOT_ERROR_LED 	(2)
-#define V_ERROR_LED 	(3)
-#define I_ERROR_LED 	(4)
-#define GEN_ERROR_LED 	(5)
-#define HEARTBEAT 		(6)
+/****************************************************************************
+ * Includes
+ ***************************************************************************/
+
+#include "led.h"
+
+/****************************************************************************
+ * Typedefs
+ ***************************************************************************/
+
+typedef enum {
+    LED_WARNING = LED_COUNT_CORE,
+    LED_MOT_ERROR,
+    LED_V_ERROR,
+    LED_I_ERROR,
+    LED_HEARTBEAT,
+    LED_COUNT
+} AppLEDPurpose_t;
+
+/****************************************************************************
+ * Public Prototypes
+ ***************************************************************************/
+
+void diag_init();
 
 #endif //FULLCURRENT_SMARTS_DIAGNOSTICS_H

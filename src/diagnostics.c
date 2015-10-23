@@ -18,9 +18,6 @@ GNU General Public License for more details.
 
 #include "FreeRTOS.h"
 #include "task.h"
-#include "led.h"
-
-#include "diagnostics.h"
 #include "string.h"
 
 
@@ -45,6 +42,8 @@ static uint32_t warningsPresent = 0;
 
 void diag_task( void * pvParameters );
 
+static void init_leds();
+
 /****************************************************************************
  * Public Functions
  ***************************************************************************/
@@ -54,20 +53,13 @@ void diag_task( void * pvParameters );
  */
 void diag_init( void )
 {
-    xTaskCreate(diag_task, "DIAGNOS", 1024, NULL, 3, &diag_task_handle);
-
-    GPIO_InitTypeDef  GPIO_InitStructure;
-
-    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE);
-
-    /* Configure the GPIO_LED pin */
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_Init(GPIOB, &GPIO_InitStructure);
+    init_leds();
+    
+   // xTaskCreate(diag_task, "DIAGNOS", 1024, NULL, 3, &diag_task_handle);
 }
+
+
+
 
 bool diag_GetHardwareOvercurrent( void )
 {
@@ -131,6 +123,7 @@ static void diag_Task( void * pvParameters )
 
     while (1)
     {
+        /*
         if (warningsPresent) {
             d1k_LED_On(WARNING_LED);
         } else {
@@ -190,8 +183,44 @@ static void diag_Task( void * pvParameters )
         memcpy(&msg.Data[0],&errorsPresent,sizeof(errorsPresent));
         memcpy(&msg.Data[4],&warningsPresent,sizeof(warningsPresent));
 
-        fullCAN_SendPacket(&msg,FULLCAN_IDBASE_EVENTS);
-
+        //fullCAN_SendPacket(&msg,FULLCAN_IDBASE_EVENTS);
+    */
         vTaskDelayUntil( &xLastWakeTime, configTICK_RATE_HZ/DIAGNOSTICS_TASK_FREQUENCY);
     }
 }
+
+static void init_leds (void)
+{
+    LEDInitStruct_t led_init_struct;
+
+    led_init_struct.GPIOx = GPIOD;
+    led_init_struct.off_time = 0;
+    led_init_struct.on_time = 0;
+    led_init_struct.GPIO_Clock = RCC_AHB1Periph_GPIOD;
+    led_init_struct.GPIO_Pin = GPIO_Pin_7;
+    led_init(LED_CAN, &led_init_struct);
+
+    led_init_struct.GPIO_Pin = GPIO_Pin_2;
+    led_init(LED_ERROR, &led_init_struct);
+
+    led_init_struct.GPIO_Pin = GPIO_Pin_6;
+    led_init(LED_WARNING, &led_init_struct);
+
+    led_init_struct.GPIO_Pin = GPIO_Pin_5;
+    led_init(LED_MOT_ERROR, &led_init_struct);
+
+    led_init_struct.GPIO_Pin = GPIO_Pin_4;
+    led_init(LED_V_ERROR, &led_init_struct);
+
+    led_init_struct.GPIO_Pin = GPIO_Pin_3;
+    led_init(LED_I_ERROR, &led_init_struct);
+
+    led_init_struct.off_time = 500;
+    led_init_struct.on_time = 500;
+
+    led_init_struct.GPIOx = GPIOB;
+    led_init_struct.GPIO_Clock = RCC_AHB1Periph_GPIOB;
+    led_init_struct.GPIO_Pin = GPIO_Pin_5;
+    led_init(LED_HEARTBEAT, &led_init_struct);
+}
+

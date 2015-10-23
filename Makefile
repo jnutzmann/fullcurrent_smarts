@@ -57,6 +57,7 @@ SRC= \
 stm32f4xx_it.c \
 system_stm32f4xx.c \
 main.c \
+diagnostics.c \
 syscalls.c
 
 # FreeRTOS Source Files
