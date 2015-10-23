@@ -19,6 +19,7 @@ include_directories(
 set(SOURCE_FILES
     config/FreeRTOSConfig.h
     config/stm32f4xx_conf.h
+        config/system_cfg.h
     d1k/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h
     d1k/CMSIS/Device/ST/STM32F4xx/Include/system_stm32f4xx.h
     d1k/CMSIS/Include/arm_common_tables.h
@@ -126,6 +127,11 @@ set(SOURCE_FILES
     hardware/system_stm32f4xx.c
     src/diagnostics.c
     src/diagnostics.h
-    src/main.c)
+    src/main.c
+    src/pwm.c
+    src/pwm.h
+        d1k/src/func/math_limits.c
+        d1k/src/func/math_limits.h
+)
 
 add_executable(fullcurrent ${SOURCE_FILES})

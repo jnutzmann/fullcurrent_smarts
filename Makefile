@@ -47,7 +47,7 @@ INCLUDE= \
 # of the same directory as their source files
 vpath %.c d1k/STM32F4xx_StdPeriph_Driver/src d1k/syscall hardware d1k/FreeRTOS \
 	  d1k/FreeRTOS/portable/MemMang d1k/FreeRTOS/portable/GCC/ARM_CM4F \
-	  d1k/src d1k/src/drivers src
+	  d1k/src d1k/src/drivers d1k/src/func src
 
 vpath %.s $(STARTUP)
 ASRC=startup_stm32f4xx.s
@@ -58,6 +58,7 @@ stm32f4xx_it.c \
 system_stm32f4xx.c \
 main.c \
 diagnostics.c \
+pwm.c \
 syscalls.c
 
 # FreeRTOS Source Files
@@ -68,7 +69,8 @@ SRC+= \
 led.c \
 can.c \
 i2c.c \
-nvmem.c
+nvmem.c \
+math_limits.c
 
 # Standard Peripheral Source Files
 SRC+= \
