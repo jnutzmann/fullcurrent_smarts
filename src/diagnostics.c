@@ -59,52 +59,50 @@ void diag_init( void )
 }
 
 
+//bool diag_GetHardwareOvercurrent( void )
+//{
+//    return !GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_1);
+//}
 
-
-bool diag_GetHardwareOvercurrent( void )
-{
-    return !GPIO_ReadInputDataBit(GPIOB,GPIO_Pin_1);
-}
-
-void diag_ThrowError( ErrorEnum_t error )
-{
-    errorsPresent |= (uint32) (0x1 << error);
-}
-
-void diag_ClearError( ErrorEnum_t error )
-{
-    errorsPresent &= ~((uint32) (0x1 << error));
-}
-
-bool diag_GetErrorState( ErrorEnum_t error )
-{
-    return errorsPresent & (0x1 << error);
-}
-
-uint32 diag_GetErrorBitmask ( void )
-{
-    return errorsPresent;
-}
-
-void diag_ThrowWarning( WarningEnum_t warning )
-{
-    warningsPresent |= (uint32) (0x1 << warning);
-}
-
-void diag_ClearWarning( WarningEnum_t warning )
-{
-    warningsPresent &= ~((uint32) (0x1 << warning));
-}
-
-bool diag_GetWarningState( WarningEnum_t warning )
-{
-    return warningsPresent & (0x1 << warning);
-}
-
-uint32 diag_GetWarningBitmask( void )
-{
-    return warningsPresent;
-}
+//void diag_ThrowError( ErrorEnum_t error )
+//{
+//    errorsPresent |= (uint32) (0x1 << error);
+//}
+//
+//void diag_ClearError( ErrorEnum_t error )
+//{
+//    errorsPresent &= ~((uint32) (0x1 << error));
+//}
+//
+//bool diag_GetErrorState( ErrorEnum_t error )
+//{
+//    return errorsPresent & (0x1 << error);
+//}
+//
+//uint32 diag_GetErrorBitmask ( void )
+//{
+//    return errorsPresent;
+//}
+//
+//void diag_ThrowWarning( WarningEnum_t warning )
+//{
+//    warningsPresent |= (uint32) (0x1 << warning);
+//}
+//
+//void diag_ClearWarning( WarningEnum_t warning )
+//{
+//    warningsPresent &= ~((uint32) (0x1 << warning));
+//}
+//
+//bool diag_GetWarningState( WarningEnum_t warning )
+//{
+//    return warningsPresent & (0x1 << warning);
+//}
+//
+//uint32 diag_GetWarningBitmask( void )
+//{
+//    return warningsPresent;
+//}
 
 /****************************************************************************
  * Private Functions
