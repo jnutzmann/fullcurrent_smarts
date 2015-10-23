@@ -1,16 +1,50 @@
 # fullCURRENT Smarts
 
-This is a project with code for the fullCURRENT motor controller.  It was based off a demo project of FreeRTOS running on a STM32F4 Discovery board located here: [website](https://github.com/wangyeee/STM32F4-FreeRTOS)
+This is a project with code for the fullCURRENT motor controller.
+
+It was based off a demo project of FreeRTOS running on a STM32F4 Discovery board located here: [website](https://github.com/wangyeee/STM32F4-FreeRTOS)
+
+
+### Initializing the submodule(s)
+
+This project uses submodules for common libraries like D1K.  When you first clone the repo, you have to initialize them:
+
+```bash
+git submodule update --init --recursive
+```
+
 
 ### Install the toolchain
 
-The pre-built version of GNU Tools for ARM can be downloaded from its [website](https://launchpad.net/gcc-arm-embedded). It's available for most systems. Follow the instructions in the readme file and installed the toolchain to your system. To verify your installation, simply type `arm-none-eabi-gcc --version` in your terminal, if everything goes right, you'll get output like this:
+The pre-built version of GNU Tools for ARM can be downloaded from its [website](https://launchpad.net/gcc-arm-embedded).
+
+The makefile assumes it is installed in /usr/local/lib/gcc-arm-none-eabi-4_9-2015q3
+
+Also note, you might need to install a 32 bit library if you get weird errors when trying to run this version of GCC.
+
+
+### Making
+This project is makefile driven.  You can make the project by simply typing `make`.
+
+Other commands include:
+
+clean: `make clean`
+program with JLink: `make jlink`
+clean and build: `make cb`
+clean, build, and flash: `make cbf`
+build and flash: `make bf`
+
+
+### Programming
+I have been using a Segger J-Link to program.  To do this, you need to install their "software and documentation pack" from [here](https://www.segger.com/jlink-software.html).
+
+
+
+
+## Archive
 
 ### ST Link Use
 Clone this [git](https://github.com/texane/stlink), follow the instructions on that page and install st-util to your system.
-
-### Compile this example
-The only thing you need to do is to edit the makefile and let it know your toolchain installation path. Change the `TOOLCHARN_ROOT` variable at the third line of makefile and point it to where you installed the toolchain. The you can simply type `make` and compile the example.
 
 ### Debug
 Connect your STM32F4Discovery with a USB cable. You can flash the binary into the board with this:
