@@ -56,12 +56,14 @@ set(SOURCE_FILES
     d1k/FreeRTOS/queue.c
     d1k/FreeRTOS/tasks.c
     d1k/FreeRTOS/timers.c
-    d1k/src/drivers/can.c
-    d1k/src/drivers/can.h
-    d1k/src/drivers/i2c.c
-    d1k/src/drivers/i2c.h
-    d1k/src/drivers/nvmem.c
-    d1k/src/drivers/nvmem.h
+        d1k/src/can.c
+        d1k/src/can.h
+        d1k/src/i2c.c
+        d1k/src/i2c.h
+    d1k/src/drivers/mb85rcxxx.c
+    d1k/src/drivers/mb85rcxxx.h
+    d1k/src/nvmem.c
+    d1k/src/nvmem.h
     d1k/src/led.c
     d1k/src/led.h
     d1k/src/syscalls.c
@@ -132,6 +134,10 @@ set(SOURCE_FILES
     src/pwm.h
         d1k/src/func/math_limits.c
         d1k/src/func/math_limits.h
+        src/control_loop.c
+        src/control_loop.h
+        src/adc.c
+        src/adc.h
 )
 
 add_executable(fullcurrent ${SOURCE_FILES})

@@ -59,6 +59,8 @@ system_stm32f4xx.c \
 main.c \
 diagnostics.c \
 pwm.c \
+#control_loop.c \
+#adc.c \
 syscalls.c
 
 # FreeRTOS Source Files
@@ -70,6 +72,7 @@ led.c \
 can.c \
 i2c.c \
 nvmem.c \
+mb85rcxxx.c \
 math_limits.c
 
 # Standard Peripheral Source Files
