@@ -21,19 +21,11 @@ GNU General Public License for more details.
  * Includes
  ***************************************************************************/
 
-#include "d1k.h"
 #include "arm_math.h"
 
 /****************************************************************************
  * Defines
  ***************************************************************************/
-
-//        |  1   |  2   |  3     |  4   |  5    |
-// ----------------------------------------------
-// ADC 1: |  IA  |  VA  |  VN    |  T   |  TM1  |
-// ADC 2: |  IB  |  VB  |  VGATE |  TN  |  HWIF |
-// ADC 3: |  IC  |  VC  |  VBUS  |  x   |  x    |
-// ----------------------------------------------
 
 #define ADC_NUM_CONVERSIONS 	(5)
 #define ADC_NUM_SIM_CHANNELS	(3)
@@ -62,16 +54,6 @@ typedef enum
  * Public Function Prototypes
  ***************************************************************************/
 
-void adc_Init( uint32 fs );
-
-float adc_GetReading ( ADC_Channel_t channelIndex, q15_t* filter, uint16 filterLength );
-
-float adc_GetMedian5Reading ( ADC_Channel_t channelIndex );
-
-q15_t adc_GetReadingRaw ( ADC_Channel_t channelIndex, q15_t* filter, uint16 filterLength );
-
-q15_t adc_GetMeadian5ReadingRaw ( ADC_Channel_t channelIndex );
-
-float adc_GetCachedReading( ADC_Channel_t channelIndex );
+void adc_init( uint32_t fs )
 
 #endif /* ADC_H_ */

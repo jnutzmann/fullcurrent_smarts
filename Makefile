@@ -60,7 +60,7 @@ main.c \
 diagnostics.c \
 pwm.c \
 #control_loop.c \
-#adc.c \
+adc.c \
 syscalls.c
 
 # FreeRTOS Source Files
