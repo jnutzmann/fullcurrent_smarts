@@ -138,8 +138,8 @@ set(SOURCE_FILES
         src/control_loop.h
         src/adc.c
         src/adc.h
-        src/analog.c
-        src/analog.h
+	src/measurements.h
+	src/measurements.c
 )
 
 add_executable(fullcurrent ${SOURCE_FILES})

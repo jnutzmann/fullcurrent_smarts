@@ -1,5 +1,5 @@
 /********************************************************************
-adc.h
+measurements.h
 
 Copyright (c) 2014, Jonathan Nutzmann
 
@@ -14,47 +14,44 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 ********************************************************************/
 
-#ifndef ADC_H
-#define ADC_H
+#ifndef MEASUREMENTS_H
+#define MEASUREMENTS_H
 
 /****************************************************************************
  * Includes
  ***************************************************************************/
 
-#include "arm_math.h"
+#include "adc.h"
 
 /****************************************************************************
  * Defines
  ***************************************************************************/
 
-#define ADC_NUM_CONVERSIONS 	(5)
-#define ADC_NUM_SIM_CHANNELS	(3)
-#define ADC_NUM_CHANNELS		(ADC_NUM_CONVERSIONS * ADC_NUM_SIM_CHANNELS)
-
-#define DMA_DEPTH				(64)
+/****************************************************************************
+ * Typedef
+ ***************************************************************************/
 
 typedef enum
 {
-	ADC_CH_INDEX_IA     = (0) ,
-	ADC_CH_INDEX_IB		= (1) ,
-	ADC_CH_INDEX_IC		= (2) ,
-	ADC_CH_INDEX_VA		= (3) ,
-	ADC_CH_INDEX_VB		= (4) ,
-	ADC_CH_INDEX_VC		= (5) ,
-	ADC_CH_INDEX_VN		= (6) ,
-	ADC_CH_INDEX_VGATE	= (7) ,
-	ADC_CH_INDEX_VBUS   = (8) ,
-	ADC_CH_INDEX_T		= (9),
-	ADC_CH_INDEX_TN	    = (10),
-	ADC_CH_INDEX_TM1	= (12),
-	ADC_CH_INDEX_HWIF	= (13),
-} ADC_Channel_t;
+    PHASE_A_CURRENT = ADC_CH_INDEX_IA,
+    PHASE_B_CURRENT = ADC_CH_INDEX_IB,
+    PHASE_C_CURRENT = ADC_CH_INDEX_IC,
+    PHASE_A_VOLTAGE = ADC_CH_INDEX_VA,
+    PHASE_B_VOLTAGE = ADC_CH_INDEX_VB,
+    PHASE_C_VOLTAGE = ADC_CH_INDEX_VC,
+    NEUTRAL_VOLTAGE = ADC_CH_INDEX_VN,
+    GATE_DRIVE_VOLTAGE = ADC_CH_INDEX_VGATE,
+    BUS_VOLTAGE = ADC_CH_INDEX_VBUS,
+    HIGH_SIDE_TEMP = ADC_CH_INDEX_T,
+    LOWER_SIDE_TEMP = ADC_CH_INDEX_TN,
+    AMBIENT_TEMP = ADC_CH_INDEX_TM1,
+    HARDWARE_OVERCURRENT_SETPOINT = ADC_CH_INDEX_HWIF,
+} Measurement_t;
 
 /****************************************************************************
  * Public Function Prototypes
  ***************************************************************************/
 
-void adc_init( uint32_t fs );
-q15_t adc_get_filtered_channel( ADC_Channel_t channel, q15_t* filter, int filter_length);
+void measurements_init( void );
 
 #endif /* ADC_H_ */

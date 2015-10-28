@@ -28,7 +28,6 @@ GNU General Public License for more details.
 
 #include "system_cfg.h"
 
-
 #include "adc.h"
 
 /****************************************************************************
@@ -95,6 +94,59 @@ volatile uint32_t dmaTargetIndex = 0;
 /****************************************************************************
  * Public Functions
  ***************************************************************************/
+
+q15_t adc_get_filtered_channel( ADC_Channel_t channel, q15_t* filter, int filter_length)
+{
+	int32_t result = 0;
+
+	// Determine which DMA "slot" is the latest to be filled.  It is located two behind
+	// the current target.  The current target points to the next slot to be filled.  The
+	// one previous is currently being filled.  The one before that is the most recent
+	// complete value.
+
+	int targetSlot = (dmaTargetIndex - 2);
+
+	if (targetSlot < 0)
+	{
+		targetSlot += DMA_DEPTH;
+	}
+
+	int offset = targetSlot * ADC_NUM_CHANNELS + channel;
+
+	// Be sure we have enough data to properly apply the filter.
+	if (filter_length > (DMA_DEPTH - 2) )
+	{
+		return 0;
+	}
+
+	// If we don't have a filter (length is zero), then just return the
+	// latest value.
+	if (filter_length > 0)
+	{
+		for (int i = 0; i < filter_length; i++)
+		{
+			// Apply each element of the filter.
+			result += (int32_t) adcDMA[offset] * (int32_t) filter[i] ;
+
+			offset -= ADC_NUM_CHANNELS;
+
+			// Wrap around correctly.
+			if (offset < 0)
+			{
+				offset += DMA_DEPTH * ADC_NUM_CHANNELS;
+			}
+		}
+
+		// We multiplied by a q15 number, so we have to shift by 15 to keep the
+		// the original units.
+		return (q15_t) (result >> 15);
+	}
+	else
+	{
+		return adcDMA[offset];
+	}
+}
+
 
 /**
  * Inits the ADC.
@@ -305,6 +357,6 @@ void DMA2_Stream0_IRQHandler ( void )
 		DMA2_Stream0->NDTR = ADC_NUM_CHANNELS;
 		DMA2_Stream0->CR |= (uint32_t)DMA_SxCR_EN;
 
-		// TODO: Temperature Stuff.
+		// TODO: Temperature muxing.
 	}
 }

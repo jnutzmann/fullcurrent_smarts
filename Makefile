@@ -59,8 +59,8 @@ system_stm32f4xx.c \
 main.c \
 diagnostics.c \
 pwm.c \
-#control_loop.c \
 adc.c \
+measurements.c \
 syscalls.c
 
 # FreeRTOS Source Files

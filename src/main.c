@@ -18,8 +18,9 @@ GNU General Public License for more details.
 #include "misc.h"
 #include "FreeRTOS.h"
 #include "task.h"
-
+#include "adc.h"
 #include "diagnostics.h"
+#include "measurements.h"
 
 int main(void) {
 
@@ -28,6 +29,8 @@ int main(void) {
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
 
     diag_init();
+
+    measurements_init();
 
     vTaskStartScheduler();
 }

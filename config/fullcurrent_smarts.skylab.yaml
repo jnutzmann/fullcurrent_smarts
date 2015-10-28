@@ -1,0 +1,120 @@
+
+# ===== FULLCURRENT CONTROL =======
+
+packets:
+  - name: fullcurrent_drive
+    description: Drive command.  This must be sent at a minimum of 4 hz.
+    id: 0x400
+    endian: little
+    data:
+      - name: drivemode
+        type: uint8_t
+      - name: motor_current
+        type: float
+
+  - name: fullcurrent_tire_radius
+    description: Sets the tire radius for speed calculations.
+    id: 0x401
+    endian: little
+    data:
+      - name: radius
+        type: float
+        units: meters
+        conversion: 1
+
+# ===== FULLCURRENT SMARTS =======
+
+  - name: fullcurrent_iq_id
+    description: D & Q axis currents
+    id: 0x420
+    endian: little
+    repeat: 2
+    offset: 1
+    data:
+      - name: iq
+        type: float
+        units: amps
+        conversion: 1
+      - name: id
+        type: float
+        units: amps
+        conversion: 1
+
+  - name: fullcurrent_position_speed
+    description: Position of the rotor & speed of the rotor (RPM)
+    id: 0x422
+    endian: little
+    repeat: 2
+    offset: 1
+    data:
+      - name: position
+        type: float
+        units: degrees
+        conversion: 1
+      - name: speed
+        type: float
+        units: RPM
+        conversion: 1
+
+  - name: fullcurrent_eventstate
+    description: Errors and warnings present on the controller.
+    id: 0x424
+    endian: little
+    repeat: 2
+    offset: 1
+    data:
+      - name: errors
+        type: uint32_t
+        conversion: 1
+      - name: warnings
+        type: uint32_t
+        conversion: 1
+
+  - name: fullcurrent_calibration
+    description: Gets the calibration state of the motor.
+    id: 0x426
+    endian: little
+    repeat: 2
+    offset: 1
+    data:
+      - name: calibration_enabled
+        type: uint8_t
+        units: boolean
+        conversion: 1
+      - name: calibration_successful
+        type: uint8_t
+        units: boolean
+        conversion: 1
+      - name: phases_a_and_b_flipped
+        type: uint8_t
+        units: boolean
+        conversion: 1
+      - name: motor_sensor_reversed
+        type: uint8_t
+        units: boolean
+        conversion: 1
+      - name: position_offset
+        type: float
+        units: degrees
+        conversion: 1
+
+  - name: fullcurrent_calibrate
+    description: Instructs the motor to calibrate
+    id: 0x428
+    endian: little
+    repeat: 2
+    offset: 1
+    data: # dummy data (not actually needed)
+      - name: penis_size
+        type: uint8_t
+        units: mil
+        conversion: 1
+  - name: fullcurrent_currentLimit
+    description: Sets the scale of the current command.
+    id: 0x42A
+    endian: little
+    data:
+      - name: currentLimit
+        type: float
+        units: A
+        conversion: 1
