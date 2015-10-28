@@ -61,6 +61,7 @@ diagnostics.c \
 pwm.c \
 adc.c \
 measurements.c \
+debug_uart.c \
 syscalls.c
 
 # FreeRTOS Source Files
