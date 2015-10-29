@@ -21,6 +21,7 @@ GNU General Public License for more details.
 #include "adc.h"
 #include "diagnostics.h"
 #include "measurements.h"
+#include "debug_uart.h"
 
 int main(void) {
 
@@ -31,6 +32,10 @@ int main(void) {
     diag_init();
 
     measurements_init();
+
+    debug_uart_init(115200);
+
+
 
     vTaskStartScheduler();
 }

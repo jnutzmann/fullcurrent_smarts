@@ -1,7 +1,7 @@
 /********************************************************************
 debug_uart.h
 
-Copyright (c) 2014, Jonathan Nutzmann, Arlo Siemsen
+Copyright (c) 2015, Jonathan Nutzmann
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -26,10 +26,18 @@ GNU General Public License for more details.
 #include "stdint.h"
 #include "stddef.h"
 
-void debug_uart_init(uint32_t baud);
-bool debug_uart_send_packet(void* data, size_t len);
+#define MAX_DEBUG_DATA_SIZE   (15)
 
-size_t debug_uart_receive_packet(void* data, size_t max);
+typedef struct {
+    uint16_t address;
+    uint16_t length;
+    bool request_to_receive;
+    uint8_t data[MAX_DEBUG_DATA_SIZE];
+} DebugUartPayload_t;
+
+void debug_uart_init(uint32_t baud);
+bool debug_uart_send_packet(DebugUartPayload_t * payload);
+
 
 // TODO: how do I handle receive? - Push into skylab handler.
 // does packetization get handled here?

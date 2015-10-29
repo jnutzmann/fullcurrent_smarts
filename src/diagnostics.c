@@ -18,12 +18,13 @@ GNU General Public License for more details.
 
 #include "FreeRTOS.h"
 #include "task.h"
+#include "debug_uart.h"
 
 /****************************************************************************
  * Definitions
  ***************************************************************************/
 
-#define DIAGNOSTICS_TASK_FREQUENCY (5)
+#define DIAGNOSTICS_TASK_FREQUENCY (1)
 
 #define BITMASK(e,a) (a << e)
 /****************************************************************************
@@ -105,15 +106,24 @@ void diag_task( void * pvParameters )
 
     while (1)
     {
-        
-        if ( warnings_present ) 
-        {
-            led_on( LED_WARNING );
-        } 
-        else 
-        {
-            led_off( LED_WARNING );
-        }
+
+        DebugUartPayload_t p;
+
+        p.address = 0x64;
+        p.length = 1;
+        p.request_to_receive = false;
+        p.data[0] = 0x63;
+
+        debug_uart_send_packet(&p);
+
+//        if ( warnings_present )
+//        {
+//            led_on( LED_WARNING );
+//        }
+//        else
+//        {
+//            led_off( LED_WARNING );
+//        }
 
 
         if (errors_present & (
