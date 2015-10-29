@@ -22,21 +22,59 @@ GNU General Public License for more details.
 #include "FreeRTOS.h"
 #include "queue.h"
 
+#define DEBUG_UART_TX_QUEUE_DEPTH (128)
+#define DEBUG_UART_RX_QUEUE_DEPTH (10)
+
 // TODO: check these?
 #define START_CHAR  (0x7E)
 #define ESCAPE_CHAR (0x7D)
+
+static uint8_t start_char = 0x7E;
+static uint8_t escape_char = 0x7D;
 
 
 #define MAX_PACKET_SIZE (19)  //
 #define MAX_DATA_SIZE   (17)
 // [SSSS SSSS] [AAAA AAAA] [AAAR LLLL] [DDDD DDDD] [x0-15] [CCCC CCCC]
 
-static xQueueHandle rxQueue;                  // Receive queue (packet level)
-static xQueueHandle txQueue;                  // Transmit queue (byte level)
+
+typedef struct {
+    uint16_t address;
+    uint16_t length;
+    bool request_to_receive;
+    uint8_t data[MAX_DATA_SIZE];
+} UartDebugPayload_t;
+
+static xQueueHandle rx_queue;                  // Receive queue (packet level)
+static xQueueHandle tx_queue;                  // Transmit queue (byte level)
 static char rxPacketBuffer[MAX_PACKET_SIZE];  // Buffer used to hold packet before fully received.
+
+
+bool debug_uart_sent_packet(UartDebugPayload_t* payload)
+{
+    xQueueSendFromISR(tx_queue, &start_char, NULL);
+
+    uint8_t holder = (payload->address) >> 3;
+
+    xQueueSendFromISR(tx_queue, &holder, NULL);
+
+    holder = (payload->address) << 5
+             | ((payload->request_to_receive) << 4)
+             | ((payload->length));
+
+    xQueueSendFromISR(tx_queue, &holder, NULL);
+
+    for ( int i=0; i < payload->length; i++)
+    {
+        xQueueSendFromISR(tx_queue, payload->data + i, NULL);
+    }
+}
+
 
 void debug_uart_init(uint32_t baudrate)
 {
+    tx_queue = xQueueCreate(DEBUG_UART_TX_QUEUE_DEPTH, sizeof(uint8_t));
+
     // Setup USART3
     // PB10 - TX
     // PB11 - RX
@@ -84,10 +122,43 @@ void debug_uart_init(uint32_t baudrate)
     NVIC_Init(&NVIC_InitStruct);
 }
 
-static void try_send()
+static void start_send()
 {
-    // Check to make sure the buffer is empty
+    USART_ITConfig(USART3, USART_IT_TXE, ENABLE);
+}
 
+void USART3_IRQHandler(void)
+{
+    if ( USART_GetITStatus( USART3, USART_IT_RXNE ) )
+    {
+        uint16_t data = USART_ReceiveData(USART3);
+    }
+
+    if ( USART_GetITStatus( USART3, USART_IT_TXE ) )
+    {
+        uint16_t to_send = 0;
+
+        if ( xQueueReceiveFromISR( tx_queue, &to_send, NULL ) == pdTRUE )
+        {
+            USART_SendData(USART3, &to_send);
+        }
+        else
+        {
+            // we ran out of data to send, so disable the interrupt
+            USART_ITConfig(USART3, USART_IT_TXE, DISABLE);
+        }
+    }
+
+
+}
+
+static void continue_send()
+{
+    uint16_t data;
+
+
+
+    USART_SendData(USART3, )
     USART_ITConfig(USART3, USART_IT_TXE, ENABLE);
 }
 
